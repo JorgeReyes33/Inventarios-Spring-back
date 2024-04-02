@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,11 @@ public class CategoryRestController {
 
     }
 
-    //Obtener las categorias por id 
+    /**
+     * Metodo para buscar categorias por id 
+     * @param id
+     * @return
+     */
     @GetMapping("/categories/{id}") 
     public ResponseEntity<CategoryResponseRest> searchCategoriesById( @PathVariable Long id ) {
 
@@ -53,5 +58,22 @@ public class CategoryRestController {
         return response; 
 
     }
+
+
+    /**
+     * Metodo para actualizar un registro mediante el metodo PUT
+     * @param category
+     * @param id
+     * @return
+     */
+    @PutMapping("/categories/{id}") 
+    public ResponseEntity<CategoryResponseRest> update( @RequestBody Category category, @PathVariable Long id ) {
+
+        ResponseEntity<CategoryResponseRest> response = service.update(category, id);
+        return response; 
+
+    }
+
+
 
 }

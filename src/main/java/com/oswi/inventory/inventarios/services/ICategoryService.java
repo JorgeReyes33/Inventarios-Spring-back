@@ -14,6 +14,9 @@ public interface ICategoryService {
 
     public ResponseEntity<CategoryResponseRest> save(Category category);
 
+    //Este metodo update recibe un objeto de categoria y el id 
+    public ResponseEntity<CategoryResponseRest> update(Category category, Long id);
+
 
 
 
