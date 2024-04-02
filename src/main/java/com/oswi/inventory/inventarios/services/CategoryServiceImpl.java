@@ -1,6 +1,8 @@
 package com.oswi.inventory.inventarios.services;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,6 +52,42 @@ public class CategoryServiceImpl implements ICategoryService{
         } catch (Exception e) {
 
             response.setMetadata("Respuesta fallida", "-1", "Error al consultar");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+   
+        }
+
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+
+    }
+
+    //Metodo para buscar por Id 
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<CategoryResponseRest> searchById(Long id) {
+        
+        //Instanciamos un objeto de la clase CategoryResponseRest
+        CategoryResponseRest response = new CategoryResponseRest();
+        List<Category> list = new ArrayList<>();
+
+        try {
+            
+            //Este metodo devuelve un objeto optional, por eso se declara asi.
+            Optional<Category> category = categoryDao.findById(id);
+
+            //Si encuentra categorias, las guarda en list y la devuelve como respuesta 
+            if(category.isPresent()) {
+                list.add(category.get());
+                response.getCategoryResponse().setCategory(list);
+                response.setMetadata("Respuesta ok", "00", "Categoria encontrada");
+            } else {
+                response.setMetadata("Respuesta fallida", "-1", "Categoria no encontrada");
+                return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+
+            response.setMetadata("Respuesta fallida", "-1", "Error al consultar por Id");
             e.getStackTrace();
             return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
    

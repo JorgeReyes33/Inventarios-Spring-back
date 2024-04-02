@@ -9,4 +9,8 @@ public interface ICategoryService {
     //Con Response Entity podemos mandar las respuestas hacia el front, mandar una respuesta custom
     public ResponseEntity<CategoryResponseRest> search();
     
+    public ResponseEntity<CategoryResponseRest> searchById(Long id);
+
+
+    
 }
