@@ -17,6 +17,8 @@ public interface ICategoryService {
     //Este metodo update recibe un objeto de categoria y el id 
     public ResponseEntity<CategoryResponseRest> update(Category category, Long id);
 
+    public ResponseEntity<CategoryResponseRest> deleteById(Long id);
+
 
 
 
