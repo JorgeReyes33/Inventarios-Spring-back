@@ -27,7 +27,7 @@ public class Category implements Serializable {
     @Id //Indicar el id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera el ID
     private Long id;
-    private String nombre;
-    private String descripcion;
+    private String name;
+    private String description;
 
 }

@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oswi.inventory.inventarios.models.Category;
 import com.oswi.inventory.inventarios.responses.CategoryResponseRest;
 import com.oswi.inventory.inventarios.services.ICategoryService;
 
@@ -37,4 +40,18 @@ public class CategoryRestController {
 
     }
     
+
+    //Guardar un registro de categoria 
+    /*
+     * @RequestBody -> Es el cuerpo que se va a enviar mediante el metodo post, para guardar el objeto
+     * de categoria. Recuperar el objeto json que viene del cliente y lo convierte a un objeto Category.
+    */
+    @PostMapping("/categories") 
+    public ResponseEntity<CategoryResponseRest> save( @RequestBody Category category ) {
+
+        ResponseEntity<CategoryResponseRest> response = service.save(category);
+        return response; 
+
+    }
+
 }
