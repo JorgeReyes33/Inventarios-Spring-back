@@ -72,4 +72,11 @@ public class ProductRestController {
         return respponse;
     }
 
+
+    @GetMapping("/products/filter/{name}")
+    public ResponseEntity<ProductResponseRest> searchByName(@PathVariable String name){
+        ResponseEntity<ProductResponseRest> respponse = productService.searchByName(name);
+        return respponse;
+    }
+
 }
