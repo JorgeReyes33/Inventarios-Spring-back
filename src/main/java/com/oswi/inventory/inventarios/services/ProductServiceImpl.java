@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 //import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.oswi.inventory.inventarios.dao.ICategoryDao;
 import com.oswi.inventory.inventarios.dao.IProductDao;
@@ -15,6 +16,9 @@ import com.oswi.inventory.inventarios.models.Category;
 import com.oswi.inventory.inventarios.models.Product;
 import com.oswi.inventory.inventarios.responses.ProductResponseRest;
 //import com.oswi.inventory.inventarios.responses.ResponseRest;
+import com.oswi.inventory.inventarios.util.Util;
+
+
 
 @Service //Definimos esta clase como servicio
 public class ProductServiceImpl implements IProductService {
@@ -30,6 +34,7 @@ public class ProductServiceImpl implements IProductService {
     }
     
     @Override
+    @Transactional
     public ResponseEntity<ProductResponseRest> save(Product product, Long categoryId) {
         
         //Objeto de respuesta del servicio
@@ -60,6 +65,49 @@ public class ProductServiceImpl implements IProductService {
                 response.setMetadata("Respuesta no ok", "400", "Producto no guardado");
                 return new ResponseEntity<ProductResponseRest>(response, HttpStatus.BAD_REQUEST);
             }
+
+        } catch (Exception e) {
+            
+            e.getStackTrace();
+            response.setMetadata("Respuesta no ok", "500", "Error al guardar producto");
+            return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);    
+
+        }
+
+        return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK); 
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<ProductResponseRest> searchById(Long id) {
+        
+        //Objeto de respuesta del servicio
+        ProductResponseRest response = new ProductResponseRest();
+        //Aqui se almacena la respuesta al llamar al metodo save
+        List<Product> list = new ArrayList<>();
+
+        try {
+            
+            //Buscar producto por id
+            Optional<Product> product = productDao.findById(id);
+
+            if(product.isPresent()) {
+                
+                //Descomprimir la imagen que esta en base_64
+                byte[] imageDescompressed = Util.decompressZLib(product.get().getPicture());
+                product.get().setPicture(imageDescompressed);
+                list.add(product.get());
+                response.getProduct().setProducts(list);
+                response.setMetadata("Respuesta Ok", "200", "Producto encontrado");
+
+            } else {
+
+                response.setMetadata("Respuesta no ok", "404", "Producto no encontrado");
+                return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+            
 
         } catch (Exception e) {
             
