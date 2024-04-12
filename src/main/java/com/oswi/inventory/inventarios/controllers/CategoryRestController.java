@@ -2,6 +2,7 @@ package com.oswi.inventory.inventarios.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,10 @@ import com.oswi.inventory.inventarios.services.ICategoryService;
 
 //Clase controladora de tipo Rest.
 
+/*
+ * CrossOrigin permite que todas las peticiones del servidor de angular puedan ser consumidas por este back.
+ */
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController //Definir este servicio para poder usarlo como un ApiREST
 @RequestMapping("/api/v1") //Se define la ruta principal  
 public class CategoryRestController {
