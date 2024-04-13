@@ -97,5 +97,11 @@ public class ProductRestController {
     }
 
 
+    @GetMapping("/products")
+    public ResponseEntity<ProductResponseRest> search(){
+        ResponseEntity<ProductResponseRest> respponse = productService.search();
+        return respponse;
+    }
+
 
 }
