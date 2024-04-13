@@ -245,6 +245,68 @@ public class ProductServiceImpl implements IProductService {
 
     }
 
+    @Override
+    @Transactional //Cuando hay un error se hace un rollback para que no haya inconsistencias
+    public ResponseEntity<ProductResponseRest> update(Product product, Long categoryId, Long id) {
+        
+        //Objeto de respuesta del servicio
+        ProductResponseRest response = new ProductResponseRest();
+        //Aqui se almacena la respuesta al llamar al metodo save
+        List<Product> list = new ArrayList<>();
+
+        try {
+            
+            //Buscar categoria a enlazar en el objeto de product
+            Optional<Category> category = categoryDao.findById(categoryId);
+
+            if(category.isPresent()) {
+                product.setCategory(category.get());
+            } else {
+                response.setMetadata("Respuesta no ok", "404", "Categoria asociada al producto no encontrada");
+                return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+            //buscar el producto a actualizar
+            Optional<Product> productSearch = productDao.findById(id);
+
+            if(productSearch.isPresent()) {
+                //Se actualizara el producto
+                productSearch.get().setAccount(product.getAccount());
+                productSearch.get().setCategory(product.getCategory());
+                productSearch.get().setName(product.getName());
+                productSearch.get().setPicture(product.getPicture());
+                productSearch.get().setPrice(product.getPrice());
+
+                //Guarda el producto en la bd, con sus datos actualizados 
+                Product productToUpdate = productDao.save(productSearch.get());
+
+                if(productToUpdate != null) {
+                    list.add(productToUpdate);
+                    response.getProduct().setProducts(list);
+                    response.setMetadata("respuesta ok", "200", "Producto Actualizado con exito");
+                } else {
+                    response.setMetadata("Respuesta no ok", "400", "Producto no actualizado");
+                    return new ResponseEntity<ProductResponseRest>(response, HttpStatus.BAD_REQUEST);
+                }
+
+                
+            } else {
+                response.setMetadata("Respuesta no ok", "400", "Producto no actualizado");
+                return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            
+            e.getStackTrace();
+            response.setMetadata("Respuesta no ok", "500", "Error al actualizar producto");
+            return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);    
+
+        }
+
+        return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK); 
+
+    }
+
     
 
 }
