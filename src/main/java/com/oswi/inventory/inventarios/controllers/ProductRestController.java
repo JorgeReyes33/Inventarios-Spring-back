@@ -17,7 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.oswi.inventory.inventarios.models.Product;
 import com.oswi.inventory.inventarios.responses.ProductResponseRest;
 import com.oswi.inventory.inventarios.services.IProductService;
+import com.oswi.inventory.inventarios.util.ProductExcelExporter;
 import com.oswi.inventory.inventarios.util.Util;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController //Definir esta clase como controlador tipo rest
@@ -140,6 +143,32 @@ public class ProductRestController {
             ResponseEntity<ProductResponseRest> respponse = productService.update(product, categoryID, id);
 
             return respponse;
+    }
+
+    /**
+     * Exportar archivo excel con los productos
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/products/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+
+        //Esto representa un archivo excel
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=result_productos.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        ResponseEntity<ProductResponseRest> products = productService.search();
+
+        ProductExcelExporter excelExporter = new ProductExcelExporter(
+                                //Obtener la lista de productos
+                                products.getBody().getProduct().getProducts()
+                                );
+
+        excelExporter.export(response);
+
     }
 
 

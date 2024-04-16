@@ -1,5 +1,7 @@
 package com.oswi.inventory.inventarios.controllers;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.oswi.inventory.inventarios.models.Category;
 import com.oswi.inventory.inventarios.responses.CategoryResponseRest;
 import com.oswi.inventory.inventarios.services.ICategoryService;
+import com.oswi.inventory.inventarios.util.CategoryExcelExporter;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 //Clase controladora de tipo Rest.
 
@@ -91,6 +96,31 @@ public class CategoryRestController {
 
         ResponseEntity<CategoryResponseRest> response = service.deleteById(id);
         return response; 
+
+    }
+
+    /**
+     * Exportar archivo excel
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/categories/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+
+        //Esto representa un archivo excel
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=result_categorias.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        ResponseEntity<CategoryResponseRest> categoryResponse = service.search();
+
+        CategoryExcelExporter excelExporter = new CategoryExcelExporter(
+                                categoryResponse.getBody().getCategoryResponse().getCategory()
+                                );
+
+        excelExporter.export(response);
 
     }
 

@@ -51,8 +51,21 @@
 			<artifactId>lombok</artifactId>
 			<!-- <version>1.18.32</version> -->
 			<optional>true</optional>
-		<scope>provided</scope>
-	</dependency>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.2.2</version>
+		</dependency>
+		<!-- Permitir exportacion a versiones mas antiguas de excel -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
